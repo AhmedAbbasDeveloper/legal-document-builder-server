@@ -25,6 +25,6 @@ app.post('/rin', (req, res) => {
   res.send(doc);
 });
 
-app.listen(4000, () => {
-  console.log('Server is running on port 4000');
+app.listen(process.env.PORT, () => {
+  console.log('Server started successfully');
 });
