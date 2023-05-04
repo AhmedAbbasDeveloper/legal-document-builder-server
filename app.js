@@ -1,7 +1,9 @@
+import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
 
 import generateWordDoc from './interfaces/word.js';
+import getDate from './utils/date.js';
 
 const app = express();
 app.use(cors());
@@ -11,17 +13,17 @@ app.post('/rin', (req, res) => {
   const data = {
     name: req.body.name,
     companyName: req.body.companyName,
+    phoneNumber: req.body.phoneNumber,
+    ...getDate(req.body.date),
     address: req.body.address,
     city: req.body.city,
-    province: req.body.province,
     postalCode: req.body.postalCode,
-    phoneNumber: req.body.phoneNumber,
   };
 
   const doc = generateWordDoc(data, 'rin-template.docx');
 
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-  res.setHeader('Content-Disposition', 'attachment; filename=output.docx');
+  res.setHeader('Content-Disposition', 'attachment; filename=Ontario_RIN.docx');
   res.send(doc);
 });
 
