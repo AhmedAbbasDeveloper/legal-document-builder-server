@@ -1,8 +1,9 @@
 import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
+import slugify from 'slugify';
 
-import generateWordDoc from './interfaces/word.js';
+import generateWordDocument from './interfaces/word.js';
 import getDate from './utils/date.js';
 
 const app = express();
@@ -10,20 +11,27 @@ app.use(cors());
 app.use(express.json());
 
 app.post('/rin', (req, res) => {
+  const {
+    name, companyName, phoneNumber, date, address, city, postalCode,
+  } = req.body;
+
   const data = {
-    name: req.body.name,
-    companyName: req.body.companyName,
-    phoneNumber: req.body.phoneNumber,
-    ...getDate(req.body.date),
-    address: req.body.address,
-    city: req.body.city,
-    postalCode: req.body.postalCode,
+    name,
+    companyName,
+    phoneNumber,
+    ...getDate(date),
+    address,
+    city,
+    postalCode,
   };
 
-  const doc = generateWordDoc(data, 'rin-template.docx');
+  const doc = generateWordDocument(data, 'rin-template.docx');
 
+  const fileName = `${slugify(data.companyName)}-RIN-Letter.docx`;
+
+  res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
   res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-  res.setHeader('Content-Disposition', 'attachment; filename=Ontario_RIN.docx');
+  res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
   res.send(doc);
 });
 

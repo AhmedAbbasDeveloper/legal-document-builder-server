@@ -2,7 +2,7 @@ import Docxtemplater from 'docxtemplater';
 import { readFileSync } from 'fs';
 import PizZip from 'pizzip';
 
-export default function generateWordDoc(data, template) {
+export default function generateWordDocument(data, template) {
   const content = readFileSync(template, 'binary');
 
   const zip = new PizZip(content);
@@ -11,7 +11,6 @@ export default function generateWordDoc(data, template) {
     paragraphLoop: true,
     linebreaks: true,
   });
-
   doc.render(data);
 
   const buf = doc.getZip().generate({
